@@ -25,19 +25,20 @@ export default function AddProduct() {
     setProducts(newProducts);
     localStorage.setItem('products', JSON.stringify(newProducts));
     setForm({ title: '', price: '', category: '', image: '', description: '' });
-    alert('Product added successfully!');
+    alert('✅ Product added successfully!');
   };
 
   return (
     <div className="p-6 md:p-12 min-h-screen bg-gray-900 text-gray-200">
       <h1 className="text-3xl font-bold mb-6 text-white">Add Product</h1>
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <ProductForm 
-          form={form} 
-          setForm={setForm} 
-          onSave={saveProduct} 
-          onCancel={() => setForm({ title: '', price: '', category: '', image: '', description: '' })}
-          categories={["Men's Clothing", "Women's Clothing", "Jewellery", "Electronics"]}
+        <ProductForm
+          form={form}
+          setForm={setForm}
+          onSave={saveProduct}
+          onCancel={() =>
+            setForm({ title: '', price: '', category: '', image: '', description: '' })
+          }
         />
       </div>
     </div>
