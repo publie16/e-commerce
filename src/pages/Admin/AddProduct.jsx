@@ -1,46 +1,91 @@
-// src/pages/Admin/AddProduct.jsx
-import React, { useState } from 'react';
-import ProductForm from '../../components/ProductForm';
+import React, { useState } from "react";
 
-export default function AddProduct() {
-  const [products, setProducts] = useState(() =>
-    JSON.parse(localStorage.getItem('products') || '[]')
-  );
-
-  const [form, setForm] = useState({
-    title: '',
-    price: '',
-    category: '',
-    image: '',
-    description: ''
+export default function AddProduct({ onAddProduct }) {
+  const [formData, setFormData] = useState({
+    title: "",
+    price: "",
+    image: "",
+    category: "", // now text input instead of dropdown
   });
 
-  const saveProduct = () => {
-    if (!form.title || !form.price) {
-      alert('Title and price required');
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.title || !formData.price || !formData.image) {
+      alert("Please fill all fields");
       return;
     }
-    const id = Date.now();
-    const newProducts = [{ id, ...form, price: Number(form.price) }, ...products];
-    setProducts(newProducts);
-    localStorage.setItem('products', JSON.stringify(newProducts));
-    setForm({ title: '', price: '', category: '', image: '', description: '' });
-    alert('✅ Product added successfully!');
+
+    const newProduct = {
+      id: Date.now(),
+      title: formData.title,
+      price: parseFloat(formData.price),
+      image: formData.image,
+      category: formData.category || "Uncategorized",
+    };
+
+    onAddProduct(newProduct);
+    setFormData({ title: "", price: "", image: "", category: "" });
   };
 
   return (
-    <div className="p-6 md:p-12 min-h-screen bg-gray-900 text-gray-200">
-      <h1 className="text-3xl font-bold mb-6 text-white">Add Product</h1>
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <ProductForm
-          form={form}
-          setForm={setForm}
-          onSave={saveProduct}
-          onCancel={() =>
-            setForm({ title: '', price: '', category: '', image: '', description: '' })
-          }
+    <div className="add-product-container bg-gray-900 text-white p-6 rounded-xl shadow-lg">
+      <h2 className="text-2xl font-semibold mb-4 text-center text-yellow-400">
+        Add New Product
+      </h2>
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 w-full max-w-md mx-auto"
+      >
+        <input
+          type="text"
+          name="title"
+          placeholder="Product Title"
+          value={formData.title}
+          onChange={handleChange}
+          className="p-3 rounded bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-yellow-400"
         />
-      </div>
+
+        <input
+          type="number"
+          name="price"
+          placeholder="Price"
+          value={formData.price}
+          onChange={handleChange}
+          className="p-3 rounded bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-yellow-400"
+        />
+
+        <input
+          type="text"
+          name="image"
+          placeholder="Image URL"
+          value={formData.image}
+          onChange={handleChange}
+          className="p-3 rounded bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-yellow-400"
+        />
+
+        {/* ✅ Category as normal text input */}
+        <input
+          type="text"
+          name="category"
+          placeholder="Category (e.g. Men's Clothing, Electronics)"
+          value={formData.category}
+          onChange={handleChange}
+          className="p-3 rounded bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-yellow-400"
+        />
+
+        <button
+          type="submit"
+          className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold py-2 rounded transition-all duration-200"
+        >
+          Add Product
+        </button>
+      </form>
     </div>
   );
 }
